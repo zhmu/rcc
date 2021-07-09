@@ -35,6 +35,10 @@ void VerifyScanInteger(int value)
     VerifySequence(std::to_string(value), std::array{ MakeToken(TT_LITERAL_INT, value) });
 }
 
+void VerifyScanToken(std::string_view sv, KEYWORD keyword)
+{
+    VerifySequence(sv, std::array{ MakeToken(TT_KEYWORD, keyword) });
+}
 }
 
 TEST(Scan, Empty)
@@ -42,10 +46,10 @@ TEST(Scan, Empty)
     VerifySequence("", std::array<Token, 0>{ });
 }
 
-TEST(Scan, Unrecognized) {
+TEST(Scan, Unrecognized_Character) {
     FatalGuard fh;
     EXPECT_THROW(VerifyScanSingleToken("~", static_cast<TOKEN_TYPE>(0)), FatalError);
-    EXPECT_EQ("unrecognized character '~' on line 1\n", fh.fatal_msg);
+    EXPECT_EQ("unrecognized character '~' on line 1", fh.fatal_msg);
 }
 
 TEST(Scan, Plus) { VerifyScanSingleToken("+", TT_PLUS); }
@@ -69,4 +73,14 @@ TEST(Scan, Sequence) {
         MakeToken(TT_SLASH),
         MakeToken(TT_LITERAL_INT, 5),
     });
+}
+
+TEST(Scan, Unrecognized_Token) {
+    FatalGuard fh;
+    EXPECT_THROW(VerifySequence("foo", std::array<Token, 0>{ }), FatalError);
+    EXPECT_EQ("unrecognized keyword 'foo'", fh.fatal_msg);
+}
+
+TEST(Scan, Token_Int) {
+    VerifyScanToken("int", K_INT);
 }

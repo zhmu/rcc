@@ -8,6 +8,7 @@ struct ScannerFeeder
         : input(std::move(input))
     {
         scan_set_fn([](void* arg) { return static_cast<ScannerFeeder*>(arg)->FetchChar(); }, this);
+        scan_set_pending_char(0);
     }
 
     ~ScannerFeeder()

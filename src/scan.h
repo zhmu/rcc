@@ -7,6 +7,11 @@ enum TOKEN_TYPE {
     TT_STAR,
     TT_SLASH,
     TT_LITERAL_INT,
+    TT_KEYWORD,
+};
+
+enum KEYWORD {
+    K_INT,
 };
 
 struct Token {

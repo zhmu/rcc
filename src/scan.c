@@ -1,11 +1,23 @@
 #include "scan.h"
 #include <stdio.h>
+#include <string.h>
 #include "lib.h"
+
+#define MAX_KEYWORD_LENGTH 32
 
 static scan_t scan_fn;
 static scan_arg_t scan_arg;
 static int pending_char = 0;
 static int line = 1;
+
+struct KEYWORD_TABLE {
+    const char* keyword;
+    enum KEYWORD value;
+};
+
+static struct KEYWORD_TABLE keyword_table[] = {
+    { "int", K_INT },
+};
 
 static int parse_digit(int c)
 {
@@ -13,9 +25,20 @@ static int parse_digit(int c)
     return -1;
 }
 
+static int parse_alpha(int c)
+{
+    if (c >= 'a' && c <= 'z') return c;
+    return -1;
+}
+
 static int isdigit(int c)
 {
     return parse_digit(c) >= 0;
+}
+
+static int isalpha(int c)
+{
+    return parse_alpha(c) >= 0;
 }
 
 void scan_set_fn(scan_t fn, scan_arg_t arg)
@@ -72,6 +95,42 @@ static void parse_int(struct Token* t)
     }
 }
 
+static void parse_string(struct Token* t, char* s, size_t max_len)
+{
+    size_t pos = 0;
+    while (pos < max_len - 1) {
+        int c = next();
+        int v = parse_alpha(c);
+        if (v < 0) {
+            scan_set_pending_char(c);
+            s[pos] = '\0';
+            return;
+        }
+
+        s[pos] = v;
+        ++pos;
+    }
+
+    fatal("too many characters while parsing string");
+}
+
+static void parse_keyword(struct Token* t)
+{
+    t->type = TT_KEYWORD;
+
+    char keyword[MAX_KEYWORD_LENGTH + 1];
+    parse_string(t, keyword, sizeof(keyword));
+
+    for (size_t n = 0; n < sizeof(keyword_table) / sizeof(keyword_table[0]); ++n) {
+        if (strcmp(keyword, keyword_table[n].keyword) != 0)
+            continue;
+        t->value = keyword_table[n].value;
+        return;
+    }
+
+    fatal("unrecognized keyword '%s'", keyword);
+}
+
 int scan(struct Token* t)
 {
     int c = skip_whitespace();
@@ -98,7 +157,13 @@ int scan(struct Token* t)
                 return 1;
             }
 
-            fatal("unrecognized character '%c' on line %d\n", c, line);
+            if (isalpha(c)) {
+                scan_set_pending_char(c);
+                parse_keyword(t);
+                return 1;
+            }
+
+            fatal("unrecognized character '%c' on line %d", c, line);
     }
     return 1;
 }
