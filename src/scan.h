@@ -2,6 +2,7 @@
 #define SCAN_H
 
 enum TOKEN_TYPE {
+    TT_EOF,
     TT_PLUS,
     TT_MINUS,
     TT_STAR,

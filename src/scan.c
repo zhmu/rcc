@@ -137,6 +137,7 @@ int scan(struct Token* t)
 
     switch(c) {
         case EOF:
+            t->type = TT_EOF;
             return 0;
         case '+':
             t->type = TT_PLUS;

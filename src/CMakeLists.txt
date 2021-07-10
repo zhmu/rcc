@@ -1,1 +1,1 @@
-add_library(rcc scan.c lib.c)
+add_library(rcc scan.c ast.c expr.c lib.c)
