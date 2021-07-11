@@ -16,7 +16,38 @@ struct KEYWORD_TABLE {
 };
 
 static struct KEYWORD_TABLE keyword_table[] = {
+    { "auto", K_AUTO },
+    { "break", K_BREAK },
+    { "case", K_CASE },
+    { "char", K_CHAR },
+    { "const", K_CONST },
+    { "continue", K_CONTINUE },
+    { "default", K_DEFAULT },
+    { "do", K_DO },
+    { "double", K_DOUBLE },
+    { "else", K_ELSE },
+    { "enum", K_ENUM },
+    { "extern", K_EXTERN },
+    { "float", K_FLOAT },
+    { "for", K_FOR },
+    { "goto", K_GOTO },
+    { "if", K_IF },
     { "int", K_INT },
+    { "long", K_LONG },
+    { "register", K_REGISTER },
+    { "return", K_RETURN },
+    { "short", K_SHORT },
+    { "signed", K_SIGNED },
+    { "sizeof", K_SIZEOF },
+    { "static", K_STATIC },
+    { "struct", K_STRUCT },
+    { "switch", K_SWITCH },
+    { "typedef", K_TYPEDEF },
+    { "union", K_UNION },
+    { "unsigned", K_UNSIGNED },
+    { "void", K_VOID },
+    { "volatile", K_VOLATILE },
+    { "while", K_WHILE },
 };
 
 static int parse_digit(int c)

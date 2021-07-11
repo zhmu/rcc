@@ -81,6 +81,45 @@ TEST(Scan, Unrecognized_Token) {
     EXPECT_EQ("unrecognized keyword 'foo'", fh.fatal_msg);
 }
 
-TEST(Scan, Token_Int) {
-    VerifyScanToken("int", K_INT);
+TEST(Scan, Token_Keywords)
+{
+    using KeywordValue = std::pair<std::string_view, KEYWORD>;
+    constexpr std::array keywords = {
+        KeywordValue{ "auto", K_AUTO },
+        KeywordValue{ "break", K_BREAK },
+        KeywordValue{ "case", K_CASE },
+        KeywordValue{ "char", K_CHAR },
+        KeywordValue{ "const", K_CONST },
+        KeywordValue{ "continue", K_CONTINUE },
+        KeywordValue{ "default", K_DEFAULT },
+        KeywordValue{ "do", K_DO },
+        KeywordValue{ "double", K_DOUBLE },
+        KeywordValue{ "else", K_ELSE },
+        KeywordValue{ "enum", K_ENUM },
+        KeywordValue{ "extern", K_EXTERN },
+        KeywordValue{ "float", K_FLOAT },
+        KeywordValue{ "for", K_FOR },
+        KeywordValue{ "goto", K_GOTO },
+        KeywordValue{ "if", K_IF },
+        KeywordValue{ "int", K_INT },
+        KeywordValue{ "long", K_LONG },
+        KeywordValue{ "register", K_REGISTER },
+        KeywordValue{ "return", K_RETURN },
+        KeywordValue{ "short", K_SHORT },
+        KeywordValue{ "signed", K_SIGNED },
+        KeywordValue{ "sizeof", K_SIZEOF },
+        KeywordValue{ "static", K_STATIC },
+        KeywordValue{ "struct", K_STRUCT },
+        KeywordValue{ "switch", K_SWITCH },
+        KeywordValue{ "typedef", K_TYPEDEF },
+        KeywordValue{ "union", K_UNION },
+        KeywordValue{ "unsigned", K_UNSIGNED },
+        KeywordValue{ "void", K_VOID },
+        KeywordValue{ "volatile", K_VOLATILE },
+        KeywordValue{ "while", K_WHILE },
+    };
+
+    for(const auto& keyword: keywords) {
+        VerifyScanToken(keyword.first, keyword.second);
+    }
 }

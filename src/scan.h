@@ -12,7 +12,38 @@ enum TOKEN_TYPE {
 };
 
 enum KEYWORD {
+    K_AUTO,
+    K_BREAK,
+    K_CASE,
+    K_CHAR,
+    K_CONST,
+    K_CONTINUE,
+    K_DEFAULT,
+    K_DO,
+    K_DOUBLE,
+    K_ELSE,
+    K_ENUM,
+    K_EXTERN,
+    K_FLOAT,
+    K_FOR,
+    K_GOTO,
+    K_IF,
     K_INT,
+    K_LONG,
+    K_REGISTER,
+    K_RETURN,
+    K_SHORT,
+    K_SIGNED,
+    K_SIZEOF,
+    K_STATIC,
+    K_STRUCT,
+    K_SWITCH,
+    K_TYPEDEF,
+    K_UNION,
+    K_UNSIGNED,
+    K_VOID,
+    K_VOLATILE,
+    K_WHILE,
 };
 
 struct Token {
