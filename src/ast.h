@@ -20,8 +20,18 @@ struct AST_NODE {
     union AST_VALUE value;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct AST_NODE* ast_new_binary_node(enum AST_NODE_TYPE type, struct AST_NODE* left, struct AST_NODE* right, union AST_VALUE value);
 struct AST_NODE* ast_new_leaf_node(enum AST_NODE_TYPE type, union AST_VALUE value);
 struct AST_NODE* ast_new_unary_node(enum AST_NODE_TYPE type, struct AST_NODE* left, union AST_VALUE value);
+
+extern union AST_VALUE ast_no_value;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

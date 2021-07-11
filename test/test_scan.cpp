@@ -48,8 +48,8 @@ TEST(Scan, Empty)
 
 TEST(Scan, Unrecognized_Character) {
     FatalGuard fh;
-    EXPECT_THROW(VerifyScanSingleToken("~", static_cast<TOKEN_TYPE>(0)), FatalError);
-    EXPECT_EQ("unrecognized character '~' on line 1", fh.fatal_msg);
+    EXPECT_THROW(VerifyScanSingleToken("`", static_cast<TOKEN_TYPE>(0)), FatalError);
+    EXPECT_EQ("unrecognized character '`' on line 1", fh.fatal_msg);
 }
 
 TEST(Scan, Plus) { VerifyScanSingleToken("+", TT_PLUS); }
@@ -121,5 +121,61 @@ TEST(Scan, Token_Keywords)
 
     for(const auto& keyword: keywords) {
         VerifyScanToken(keyword.first, keyword.second);
+    }
+}
+
+TEST(Scan, Tokens)
+{
+    using TokenValue = std::pair<std::string_view, TOKEN_TYPE>;
+    constexpr std::array tokens = {
+        TokenValue{ "...", TT_ELLIPSIS },
+        TokenValue{ ">>=", TT_SHIFT_RIGHT_ASSIGN },
+        TokenValue{ "<<=", TT_SHIFT_LEFT_ASSIGN },
+        TokenValue{ "+=", TT_PLUS_ASSIGN },
+        TokenValue{ "-=", TT_MINUS_ASSIGN },
+        TokenValue{ "*=", TT_STAR_ASSIGN },
+        TokenValue{ "/=", TT_SLASH_ASSIGN },
+        TokenValue{ "%=", TT_MODULO_ASSIGN },
+        TokenValue{ "&=", TT_AMP_ASSIGN },
+        TokenValue{ "^=", TT_CARET_ASSIGN },
+        TokenValue{ "|=", TT_PIPE_ASSIGN  },
+        TokenValue{ ">>", TT_SHIFT_RIGHT },
+        TokenValue{ "<<", TT_SHIFT_LEFT },
+        TokenValue{ "++", TT_PLUS_PLUS },
+        TokenValue{ "--", TT_MINUS_MINUS },
+        TokenValue{ "->", TT_ARROW },
+        TokenValue{ "&&", TT_AMP_AMP },
+        TokenValue{ "||", TT_PIPE_PIPE },
+        TokenValue{ "<=", TT_LE },
+        TokenValue{ ">=", TT_GE },
+        TokenValue{ "==", TT_ASSIGN },
+        TokenValue{ "!=", TT_NOT_EQUALS },
+        TokenValue{ ";", TT_SEMICOLON },
+        TokenValue{ "{", TT_LBRACE },
+        TokenValue{ "}", TT_RBRACE },
+        TokenValue{ ",", TT_COMMA },
+        TokenValue{ ":", TT_COLON },
+        TokenValue{ "=", TT_EQUALS },
+        TokenValue{ "(", TT_LPAREN },
+        TokenValue{ ")", TT_RPAREN },
+        TokenValue{ "[", TT_LBRACKET },
+        TokenValue{ "]", TT_RBRACKET },
+        TokenValue{ ".", TT_DOT },
+        TokenValue{ "&", TT_AMP },
+        TokenValue{ "!", TT_NOT },
+        TokenValue{ "~", TT_TILDE },
+        TokenValue{ "-", TT_MINUS },
+        TokenValue{ "+", TT_PLUS },
+        TokenValue{ "*", TT_STAR },
+        TokenValue{ "/", TT_SLASH },
+        TokenValue{ "%", TT_MODULO },
+        TokenValue{ "<", TT_LT },
+        TokenValue{ ">", TT_GT },
+        TokenValue{ "^", TT_CARET },
+        TokenValue{ "|", TT_PIPE },
+        TokenValue{ "?", TT_QMARK },
+    };
+    for(const auto& token: tokens) {
+        VerifyScanSingleToken(token.first, token.second);
     }
 }

@@ -1,6 +1,5 @@
 #include "scan.h"
 #include <stdio.h>
-#include <string.h>
 #include "lib.h"
 
 #define MAX_KEYWORD_LENGTH 32
@@ -100,6 +99,15 @@ static int next()
     return c;
 }
 
+static int try(int v)
+{
+    int c = next();
+    if (c == v)
+        return 1;
+    scan_set_pending_char(c);
+    return 0;
+}
+
 static int skip_whitespace()
 {
     int c = next();
@@ -125,6 +133,16 @@ static void parse_int(struct Token* t)
         t->value = t->value * 10 + d;
     }
 }
+
+static int try_number(int c, struct Token* t)
+{
+    if (!isdigit(c))
+        return 0;
+    scan_set_pending_char(c);
+    parse_int(t);
+    return 1;
+}
+
 
 static void parse_string(struct Token* t, char* s, size_t max_len)
 {
@@ -171,23 +189,158 @@ int scan(struct Token* t)
             t->type = TT_EOF;
             return 0;
         case '+':
-            t->type = TT_PLUS;
+            if (try('=')) {
+                t->type = TT_PLUS_ASSIGN;
+            } else if (try('+')) {
+                t->type = TT_PLUS_PLUS;
+            } else {
+                t->type = TT_PLUS;
+            }
             break;
         case '-':
-            t->type = TT_MINUS;
+            if (try('=')) {
+                t->type = TT_MINUS_ASSIGN;
+            } else if (try('-')) {
+                t->type = TT_MINUS_MINUS;
+            } else if (try('>')) {
+                t->type = TT_ARROW;
+            } else {
+                t->type = TT_MINUS;
+                // TODO numbers
+            }
             break;
         case '*':
-            t->type = TT_STAR;
+            if (try('=')) {
+                t->type = TT_STAR_ASSIGN;
+            } else {
+                t->type = TT_STAR;
+            }
             break;
         case '/':
-            t->type = TT_SLASH;
+            if (try('=')) {
+                t->type = TT_SLASH_ASSIGN;
+            } else {
+                t->type = TT_SLASH;
+            }
+            break;
+        case '>':
+            if (try('>')) {
+                if (try('=')) {
+                    t->type = TT_SHIFT_RIGHT_ASSIGN;
+                } else {
+                    t->type = TT_SHIFT_RIGHT;
+                }
+            } else if (try('=')) {
+                t->type = TT_GE;
+            } else {
+                t->type = TT_GT;
+            }
+            break;
+        case '<':
+            if (try('<')) {
+                if (try('=')) {
+                    t->type = TT_SHIFT_LEFT_ASSIGN;
+                } else {
+                    t->type = TT_SHIFT_LEFT;
+                }
+            } else if (try('=')) {
+                t->type = TT_LE;
+            } else {
+                t->type = TT_LT;
+            }
+            break;
+        case '.':
+            if (try('.')) {
+                if (try('.')) {
+                    t->type = TT_ELLIPSIS;
+                } else {
+                    fatal("unrecognized character '%c' on line %d after '..'", c, line);
+                }
+            } else {
+                t->type = TT_DOT;
+            }
+            break;
+        case '%':
+            if (try('=')) {
+                t->type = TT_MODULO_ASSIGN;
+            } else {
+                t->type = TT_MODULO;
+            }
+            break;
+        case '&':
+            if (try('=')) {
+                t->type = TT_AMP_ASSIGN;
+            } else if (try('&')) {
+                t->type = TT_AMP_AMP;
+            } else {
+                t->type = TT_AMP;
+            }
+            break;
+        case '^':
+            if (try('=')) {
+                t->type = TT_CARET_ASSIGN;
+            } else {
+                t->type = TT_CARET;
+            }
+            break;
+        case '|':
+            if (try('=')) {
+                t->type = TT_PIPE_ASSIGN;
+            } else if (try('|')) {
+                t->type = TT_PIPE_PIPE;
+            } else {
+                t->type = TT_PIPE;
+            }
+            break;
+        case '{':
+            t->type = TT_LBRACE;
+            break;
+        case '}':
+            t->type = TT_RBRACE;
+            break;
+        case ';':
+            t->type = TT_SEMICOLON;
+            break;
+        case '!':
+            if (try('=')) {
+                t->type = TT_NOT_EQUALS;
+            } else {
+                t->type = TT_NOT;
+            }
+            break;
+        case '~':
+            t->type = TT_TILDE;
+            break;
+        case '=':
+            if (try('=')) {
+                t->type = TT_ASSIGN;
+            } else {
+                t->type = TT_EQUALS;
+            }
+            break;
+        case ',':
+            t->type = TT_COMMA;
+            break;
+        case ':':
+            t->type = TT_COLON;
+            break;
+        case '(':
+            t->type = TT_LPAREN;
+            break;
+        case ')':
+            t->type = TT_RPAREN;
+            break;
+        case '[':
+            t->type = TT_LBRACKET;
+            break;
+        case ']':
+            t->type = TT_RBRACKET;
+            break;
+        case '?':
+            t->type = TT_QMARK;
             break;
         default:
-            if (isdigit(c)) {
-                scan_set_pending_char(c);
-                parse_int(t);
-                return 1;
-            }
+            if (try_number(c, t)) return 1;
 
             if (isalpha(c)) {
                 scan_set_pending_char(c);

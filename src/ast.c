@@ -2,6 +2,8 @@
 #include <assert.h>
 #include <stdlib.h>
 
+union AST_VALUE ast_no_value;
+
 struct AST_NODE* ast_new_binary_node(enum AST_NODE_TYPE type, struct AST_NODE* left, struct AST_NODE* right, union AST_VALUE value)
 {
     struct AST_NODE* n = malloc(sizeof(struct AST_NODE));

@@ -3,8 +3,6 @@
 #include "scan.h"
 #include "lib.h"
 
-static union AST_VALUE ast_no_value;
-
 // Higher value indicate a higher precedence
 static int get_token_operator_precedence(enum TOKEN_TYPE tt)
 {
