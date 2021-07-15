@@ -11,42 +11,42 @@ static int line = 1;
 
 struct KEYWORD_TABLE {
     const char* keyword;
-    enum KEYWORD value;
+    enum TOKEN_TYPE type;
 };
 
 static struct KEYWORD_TABLE keyword_table[] = {
-    { "auto", K_AUTO },
-    { "break", K_BREAK },
-    { "case", K_CASE },
-    { "char", K_CHAR },
-    { "const", K_CONST },
-    { "continue", K_CONTINUE },
-    { "default", K_DEFAULT },
-    { "do", K_DO },
-    { "double", K_DOUBLE },
-    { "else", K_ELSE },
-    { "enum", K_ENUM },
-    { "extern", K_EXTERN },
-    { "float", K_FLOAT },
-    { "for", K_FOR },
-    { "goto", K_GOTO },
-    { "if", K_IF },
-    { "int", K_INT },
-    { "long", K_LONG },
-    { "register", K_REGISTER },
-    { "return", K_RETURN },
-    { "short", K_SHORT },
-    { "signed", K_SIGNED },
-    { "sizeof", K_SIZEOF },
-    { "static", K_STATIC },
-    { "struct", K_STRUCT },
-    { "switch", K_SWITCH },
-    { "typedef", K_TYPEDEF },
-    { "union", K_UNION },
-    { "unsigned", K_UNSIGNED },
-    { "void", K_VOID },
-    { "volatile", K_VOLATILE },
-    { "while", K_WHILE },
+    { "auto", TT_K_AUTO },
+    { "break", TT_K_BREAK },
+    { "case", TT_K_CASE },
+    { "char", TT_K_CHAR },
+    { "const", TT_K_CONST },
+    { "continue", TT_K_CONTINUE },
+    { "default", TT_K_DEFAULT },
+    { "do", TT_K_DO },
+    { "double", TT_K_DOUBLE },
+    { "else", TT_K_ELSE },
+    { "enum", TT_K_ENUM },
+    { "extern", TT_K_EXTERN },
+    { "float", TT_K_FLOAT },
+    { "for", TT_K_FOR },
+    { "goto", TT_K_GOTO },
+    { "if", TT_K_IF },
+    { "int", TT_K_INT },
+    { "long", TT_K_LONG },
+    { "register", TT_K_REGISTER },
+    { "return", TT_K_RETURN },
+    { "short", TT_K_SHORT },
+    { "signed", TT_K_SIGNED },
+    { "sizeof", TT_K_SIZEOF },
+    { "static", TT_K_STATIC },
+    { "struct", TT_K_STRUCT },
+    { "switch", TT_K_SWITCH },
+    { "typedef", TT_K_TYPEDEF },
+    { "union", TT_K_UNION },
+    { "unsigned", TT_K_UNSIGNED },
+    { "void", TT_K_VOID },
+    { "volatile", TT_K_VOLATILE },
+    { "while", TT_K_WHILE },
 };
 
 static int parse_digit(int c)
@@ -165,15 +165,13 @@ static void parse_string(struct Token* t, char* s, size_t max_len)
 
 static void parse_keyword(struct Token* t)
 {
-    t->type = TT_KEYWORD;
-
     char keyword[MAX_KEYWORD_LENGTH + 1];
     parse_string(t, keyword, sizeof(keyword));
 
     for (size_t n = 0; n < sizeof(keyword_table) / sizeof(keyword_table[0]); ++n) {
         if (strcmp(keyword, keyword_table[n].keyword) != 0)
             continue;
-        t->value = keyword_table[n].value;
+        t->type = keyword_table[n].type;
         return;
     }
 
