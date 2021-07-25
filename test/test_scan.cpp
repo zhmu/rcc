@@ -34,11 +34,6 @@ void VerifyScanInteger(int value)
 {
     VerifySequence(std::to_string(value), std::array{ MakeToken(TT_LITERAL_INT, value) });
 }
-
-void VerifyScanToken(std::string_view sv, KEYWORD keyword)
-{
-    VerifySequence(sv, std::array{ MakeToken(TT_KEYWORD, keyword) });
-}
 }
 
 TEST(Scan, Empty)
@@ -83,44 +78,44 @@ TEST(Scan, Unrecognized_Token) {
 
 TEST(Scan, Token_Keywords)
 {
-    using KeywordValue = std::pair<std::string_view, KEYWORD>;
+    using KeywordValue = std::pair<std::string_view, TOKEN_TYPE>;
     constexpr std::array keywords = {
-        KeywordValue{ "auto", K_AUTO },
-        KeywordValue{ "break", K_BREAK },
-        KeywordValue{ "case", K_CASE },
-        KeywordValue{ "char", K_CHAR },
-        KeywordValue{ "const", K_CONST },
-        KeywordValue{ "continue", K_CONTINUE },
-        KeywordValue{ "default", K_DEFAULT },
-        KeywordValue{ "do", K_DO },
-        KeywordValue{ "double", K_DOUBLE },
-        KeywordValue{ "else", K_ELSE },
-        KeywordValue{ "enum", K_ENUM },
-        KeywordValue{ "extern", K_EXTERN },
-        KeywordValue{ "float", K_FLOAT },
-        KeywordValue{ "for", K_FOR },
-        KeywordValue{ "goto", K_GOTO },
-        KeywordValue{ "if", K_IF },
-        KeywordValue{ "int", K_INT },
-        KeywordValue{ "long", K_LONG },
-        KeywordValue{ "register", K_REGISTER },
-        KeywordValue{ "return", K_RETURN },
-        KeywordValue{ "short", K_SHORT },
-        KeywordValue{ "signed", K_SIGNED },
-        KeywordValue{ "sizeof", K_SIZEOF },
-        KeywordValue{ "static", K_STATIC },
-        KeywordValue{ "struct", K_STRUCT },
-        KeywordValue{ "switch", K_SWITCH },
-        KeywordValue{ "typedef", K_TYPEDEF },
-        KeywordValue{ "union", K_UNION },
-        KeywordValue{ "unsigned", K_UNSIGNED },
-        KeywordValue{ "void", K_VOID },
-        KeywordValue{ "volatile", K_VOLATILE },
-        KeywordValue{ "while", K_WHILE },
+        KeywordValue{ "auto", TT_K_AUTO },
+        KeywordValue{ "break", TT_K_BREAK },
+        KeywordValue{ "case", TT_K_CASE },
+        KeywordValue{ "char", TT_K_CHAR },
+        KeywordValue{ "const", TT_K_CONST },
+        KeywordValue{ "continue", TT_K_CONTINUE },
+        KeywordValue{ "default", TT_K_DEFAULT },
+        KeywordValue{ "do", TT_K_DO },
+        KeywordValue{ "double", TT_K_DOUBLE },
+        KeywordValue{ "else", TT_K_ELSE },
+        KeywordValue{ "enum", TT_K_ENUM },
+        KeywordValue{ "extern", TT_K_EXTERN },
+        KeywordValue{ "float", TT_K_FLOAT },
+        KeywordValue{ "for", TT_K_FOR },
+        KeywordValue{ "goto", TT_K_GOTO },
+        KeywordValue{ "if", TT_K_IF },
+        KeywordValue{ "int", TT_K_INT },
+        KeywordValue{ "long", TT_K_LONG },
+        KeywordValue{ "register", TT_K_REGISTER },
+        KeywordValue{ "return", TT_K_RETURN },
+        KeywordValue{ "short", TT_K_SHORT },
+        KeywordValue{ "signed", TT_K_SIGNED },
+        KeywordValue{ "sizeof", TT_K_SIZEOF },
+        KeywordValue{ "static", TT_K_STATIC },
+        KeywordValue{ "struct", TT_K_STRUCT },
+        KeywordValue{ "switch", TT_K_SWITCH },
+        KeywordValue{ "typedef", TT_K_TYPEDEF },
+        KeywordValue{ "union", TT_K_UNION },
+        KeywordValue{ "unsigned", TT_K_UNSIGNED },
+        KeywordValue{ "void", TT_K_VOID },
+        KeywordValue{ "volatile", TT_K_VOLATILE },
+        KeywordValue{ "while", TT_K_WHILE },
     };
 
     for(const auto& keyword: keywords) {
-        VerifyScanToken(keyword.first, keyword.second);
+        VerifyScanSingleToken(keyword.first, keyword.second);
     }
 }
 
