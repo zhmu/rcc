@@ -73,7 +73,7 @@ TEST(Scan, Sequence) {
 TEST(Scan, Unrecognized_Token) {
     FatalGuard fh;
     EXPECT_THROW(VerifySequence("foo", std::array<Token, 0>{ }), FatalError);
-    EXPECT_EQ("unrecognized keyword 'foo'", fh.fatal_msg);
+    EXPECT_EQ("unrecognized string 'foo'", fh.fatal_msg);
 }
 
 TEST(Scan, Token_Keywords)

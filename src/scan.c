@@ -1,5 +1,6 @@
 #include "scan.h"
 #include <stdio.h>
+#include <string.h>
 #include "lib.h"
 
 #define MAX_KEYWORD_LENGTH 32
@@ -163,19 +164,15 @@ static void parse_string(struct Token* t, char* s, size_t max_len)
     fatal("too many characters while parsing string");
 }
 
-static void parse_keyword(struct Token* t)
+static int parse_keyword(const char* keyword)
 {
-    char keyword[MAX_KEYWORD_LENGTH + 1];
-    parse_string(t, keyword, sizeof(keyword));
-
     for (size_t n = 0; n < sizeof(keyword_table) / sizeof(keyword_table[0]); ++n) {
         if (strcmp(keyword, keyword_table[n].keyword) != 0)
             continue;
-        t->type = keyword_table[n].type;
-        return;
+        return keyword_table[n].type;
     }
 
-    fatal("unrecognized keyword '%s'", keyword);
+    return -1;
 }
 
 int scan(struct Token* t)
@@ -342,8 +339,17 @@ int scan(struct Token* t)
 
             if (isalpha(c)) {
                 scan_set_pending_char(c);
-                parse_keyword(t);
-                return 1;
+
+                char s[MAX_KEYWORD_LENGTH + 1];
+                parse_string(t, s, sizeof(s));
+
+                int keyword = parse_keyword(s);
+                if (keyword >= 0) {
+                    t->type = keyword;
+                    return 1;
+                }
+
+                fatal("unrecognized string '%s'", s);
             }
 
             fatal("unrecognized character '%c' on line %d", c, line);
